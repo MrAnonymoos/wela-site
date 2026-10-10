@@ -1,5 +1,5 @@
 // ====== 1. PASTE YOUR SUPABASE DETAILS HERE (see the setup guide) ======
-const SUPABASE_URL = "https://nednklpoyendpwneolwn.supabase.co/rest/v1/";
+const SUPABASE_URL = "https://nednklpoyendpwneolwn.supabase.co";
 const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5lZG5rbHBveWVuZHB3bmVvbHduIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTE2NjA2NjksImV4cCI6MjEwNzIzNjY2OX0.CBrsWszbdU65uxnLFVUdoxUU6ht1fy13llnMhnSa_ao";
 // ========================================================================
 const configured = !SUPABASE_URL.startsWith("PASTE");
