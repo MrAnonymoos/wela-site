@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wela - Account</title><meta name="description" content="Wela - the automated Bitcoin up/down trading bot for Polymarket. Test it risk-free, then go live.">
+<meta name="theme-color" content="#000000"><link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="app.js" defer></script></head><body>
+<div class="wrap"><nav><a class="logo" href="index.html">Wela</a>
+<div class="links"><a class="l" href="index.html">Home</a><a class="l" href="subscribe.html">Subscribe</a>
+<div id="authSlot" style="display:flex;gap:10px"><a class="btn o sm" href="account.html">Log in</a><a class="btn p sm" href="account.html#signup">Sign up</a></div></div></nav>
+<div class="setup" id="setupWarn">Site setup not finished: add your Supabase details in app.js so accounts work.</div></div>
+
+<div class="wrap"><div class="auth" id="authBox">
+<div id="guest"><div class="tabs"><button id="tLogin" class="on">Log in</button><button id="tSignup">Sign up</button></div>
+<form id="form"><label>Email</label><input id="email" type="email" required autocomplete="email">
+<label>Password</label><input id="pw" type="password" required minlength="8" autocomplete="current-password" placeholder="At least 8 characters">
+<div id="pw2wrap" style="display:none"><label>Confirm password</label><input id="pw2" type="password" autocomplete="new-password"></div>
+<button class="btn p full" style="margin-top:22px" id="go" type="submit">Log in</button></form>
+<a href="#" id="forgot" style="display:block;text-align:center;color:var(--muted);font-size:13px;margin-top:16px">Forgot password?</a>
+<div class="msg" id="msg"></div></div>
+<div id="member" style="display:none"><h2 style="text-align:left;font-size:26px">Your account</h2>
+<div class="row"><span>Email</span><span id="mEmail"></span></div>
+<div class="row"><span>Plan</span><span id="mPlan"></span></div>
+<div class="row"><span>Member since</span><span id="mSince"></span></div>
+<a class="btn p full" style="margin-top:24px" href="subscribe.html">View plans</a>
+<button class="btn o full" style="margin-top:12px" id="logout">Log out</button><div class="msg" id="msg2"></div></div></div></div>
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+const $=id=>document.getElementById(id);let mode=location.hash==="#signup"?"signup":"login";
+function show(el,type,t){el.className="msg "+type;el.textContent=t}
+function setMode(m){mode=m;$("tLogin").classList.toggle("on",m==="login");$("tSignup").classList.toggle("on",m==="signup");
+$("pw2wrap").style.display=m==="signup"?"block":"none";$("go").textContent=m==="signup"?"Create account":"Log in";
+$("pw").autocomplete=m==="signup"?"new-password":"current-password";$("forgot").style.display=m==="login"?"block":"none";$("msg").className="msg"}
+$("tLogin").onclick=()=>setMode("login");$("tSignup").onclick=()=>setMode("signup");setMode(mode);
+async function render(){if(!sb)return;const{data}=await sb.auth.getSession();const u=data.session&&data.session.user;
+$("guest").style.display=u?"none":"block";$("member").style.display=u?"block":"none";if(!u)return;
+$("mEmail").textContent=u.email;
+const{data:p}=await sb.from("profiles").select("plan,created_at").eq("id",u.id).single();
+const plan=p?p.plan:"free";$("mPlan").innerHTML='<span class="badge '+(plan==="pro"?"":"free")+'">'+(plan==="pro"?"PRO":"FREE")+'</span>';
+$("mSince").textContent=new Date(p?p.created_at:u.created_at).toLocaleDateString()}
+$("form").onsubmit=async e=>{e.preventDefault();const m=$("msg");
+if(!sb){show(m,"err","Site setup not finished yet (Supabase details missing).");return}
+const email=$("email").value.trim().toLowerCase(),pw=$("pw").value;$("go").disabled=true;
+try{if(mode==="signup"){if(pw!==$("pw2").value){show(m,"err","Passwords do not match.");return}
+const{data,error}=await sb.auth.signUp({email,password:pw,options:{emailRedirectTo:location.origin+"/account.html"}});
+if(error){show(m,"err",error.message);return}
+if(data.user&&data.user.identities&&data.user.identities.length===0){show(m,"err","That email already has an account. Try logging in.");return}
+if(data.session){render()}else{show(m,"ok","Account created. Check your email and click the confirmation link, then log in.")}}
+else{const{error}=await sb.auth.signInWithPassword({email,password:pw});
+if(error){show(m,"err",error.message==="Email not confirmed"?"Please confirm your email first (check your inbox).":"Wrong email or password.");return}render()}}
+finally{$("go").disabled=false}};
+$("forgot").onclick=async e=>{e.preventDefault();const m=$("msg");const email=$("email").value.trim();
+if(!sb||!email){show(m,"err","Type your email above first.");return}
+await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin+"/account.html"});show(m,"ok","If that email has an account, a reset link is on its way.")};
+$("logout").onclick=async()=>{await sb.auth.signOut();location.href="index.html"};
+if(sb)sb.auth.onAuthStateChange(()=>render());render()});
+</script><footer><div class="wrap"><b class="logo" style="font-size:20px">Wela</b>
+<p>&copy; 2026 Wela. Trading prediction markets involves risk and you can lose money. Past or simulated results do not guarantee future results. Wela is software, not financial advice, and is not affiliated with Polymarket.</p></div></footer></body></html>
