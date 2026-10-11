@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wela - Download</title><meta name="description" content="Wela - the automated Bitcoin up/down trading bot for Polymarket. Test it risk-free, then go live.">
+<meta name="theme-color" content="#000000"><link rel="stylesheet" href="style.css?v=3">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="app.js" defer></script></head><body>
+<div class="wrap"><nav><a class="logo" href="index.html">Wela</a>
+<div class="links"><a class="l" href="index.html">Home</a><a class="l" href="subscribe.html">Subscribe</a><a class="l on" href="download.html">Download</a>
+<div id="authSlot" style="display:flex;gap:10px"><a class="btn o sm" href="account.html">Log in</a><a class="btn p sm" href="account.html#signup">Sign up</a></div></div></nav>
+<div class="setup" id="setupWarn">Site setup not finished: add your Supabase details in app.js so accounts work.</div></div>
+
+<div class="wrap"><div class="hero" style="padding-bottom:30px"><span class="pill" id="ver">Windows 10 / 11</span>
+<h1 style="font-size:clamp(34px,5vw,56px)">Download <span class="g">Wela</span></h1>
+<p class="sub" style="margin-bottom:30px">Get the app, log in with your Wela account, and start in Test Run with no real money.</p>
+<div class="dl" id="dlBox"><div id="dlOut" style="display:none"><p style="color:var(--muted);margin-bottom:18px">Create a free account to download.</p>
+<div class="cta"><a class="btn p" href="account.html#signup">Create free account</a><a class="btn o" href="account.html">Log in</a></div></div>
+<div id="dlIn" style="display:none"><a class="btn p" id="dlBtn" style="font-size:18px;padding:16px 38px" href="#" download>Download for Windows</a>
+<p style="color:#6f6c99;font-size:13px;margin-top:14px" id="dlMeta"></p></div></div></div>
+
+<section style="padding-top:20px"><h2>Install in <span class="g">3 steps</span></h2><div class="grid" style="margin-top:36px">
+<div class="box"><div class="num" style="color:var(--purple);font-weight:800;font-size:14px">STEP 1</div><h3>Download</h3><p>Click the button above to get <b>Wela.exe</b>. Save it anywhere, like your Desktop.</p></div>
+<div class="box"><div class="num" style="color:var(--purple);font-weight:800;font-size:14px">STEP 2</div><h3>Open it</h3><p>Double-click Wela.exe. No installer needed. If Windows shows a blue "protected your PC" screen, click <b>More info</b>, then <b>Run anyway</b>.</p></div>
+<div class="box"><div class="num" style="color:var(--purple);font-weight:800;font-size:14px">STEP 3</div><h3>Start in Test Run</h3><p>Watch it trade with simulated money first. Switch to Live when you are ready.</p></div></div>
+<p style="text-align:center;color:#6f6c99;font-size:13px;margin-top:30px">Windows may warn about new apps from small publishers. Only download Wela from this page.</p></section></div>
+<script>
+// ====== SET THESE AFTER YOU UPLOAD THE APP (see the guide) ======
+const DOWNLOAD_URL = "https://github.com/YOUR-GITHUB-USERNAME/wela-site/releases/latest/download/Wela.exe";
+const APP_VERSION = "v0.1 (Test Run build)";
+// ================================================================
+document.addEventListener("DOMContentLoaded", async () => {
+  let user = null;
+  if (sb) { const { data } = await sb.auth.getSession(); user = data.session && data.session.user; }
+  document.getElementById(user ? "dlIn" : "dlOut").style.display = "block";
+  document.getElementById("dlBtn").href = DOWNLOAD_URL;
+  document.getElementById("dlMeta").textContent = "Version " + APP_VERSION + " - Windows 10 or 11";
+});
+</script>
+<footer><div class="wrap"><b class="logo" style="font-size:20px">Wela</b>
+<p>&copy; 2026 Wela. Trading prediction markets involves risk and you can lose money. Past or simulated results do not guarantee future results. Wela is software, not financial advice, and is not affiliated with Polymarket.</p></div></footer></body></html>
