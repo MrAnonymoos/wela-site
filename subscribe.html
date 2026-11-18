@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wela - Plans</title><meta name="description" content="Wela - the automated Bitcoin up/down trading bot for Polymarket. Test it risk-free, then go live.">
+<meta name="theme-color" content="#000000"><link rel="stylesheet" href="style.css?v=3">
+<style>
+.agree{max-width:640px;margin:0 auto 34px;text-align:center}
+.chk{display:flex;align-items:flex-start;gap:10px;text-align:left;margin:0;font-size:14px;color:var(--muted);cursor:pointer;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:14px 16px}
+.chk input{width:auto;padding:0;margin:3px 0 0;flex-shrink:0;accent-color:#9b5cff}
+.chk a{text-decoration:underline;color:var(--text)}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+</style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="app.js" defer></script></head><body>
+<div class="wrap"><nav><a class="logo" href="index.html">Wela</a>
+<div class="links"><a class="l" href="index.html">Home</a><a class="l on" href="subscribe.html">Subscribe</a><a class="l" href="download.html">Download</a>
+<div id="authSlot" style="display:flex;gap:10px"><a class="btn o sm" href="account.html">Log in</a><a class="btn p sm" href="account.html#signup">Sign up</a></div></div></nav>
+<div class="setup" id="setupWarn">Site setup not finished: add your Supabase details in app.js so accounts work.</div></div>
+
+<div class="wrap"><div class="hero" style="padding-bottom:30px"><h1 style="font-size:clamp(34px,5vw,56px)">Pick your <span class="g">plan</span></h1>
+<p class="sub" style="margin-bottom:10px">Start free. Upgrade when you are ready to trade for real.</p></div>
+<div class="agree"><label class="chk"><input type="checkbox" id="agree"><span>I agree to the <a href="terms.html" target="_blank">Terms</a> and <a href="refund.html" target="_blank">Refund Policy</a>. <b>All sales are final. No refunds.</b> You can cancel anytime and keep access until the end of the period you paid for.</span></label><div class="msg" id="buyMsg"></div></div>
+<div class="plans">
+<div class="plan"><h3>Free</h3><div class="price">$0<small> /forever</small></div><div class="note">&nbsp;</div>
+<ul><li>Test Run mode (simulated, no real money)</li><li>15-minute window bot</li><li>Full trade log export</li><li>All strategy settings</li></ul>
+<a class="btn o full" href="account.html#signup">Start free</a></div>
+
+<div class="plan unl"><div class="bill"><span class="bl on" data-m="m">Monthly</span><label class="sw"><input type="checkbox" class="billsw" aria-label="Bill yearly"><i></i></label><span class="bl" data-m="y">Yearly</span><span class="save">Save 20%</span></div><h3 style="color:#c9b8ff">Pro</h3>
+<div class="price"><span class="g" data-m="4.99" data-y="3.99">$4.99</span><small> /month</small></div><div class="note" data-m="" data-y="Billed $47.90 per year"></div>
+<ul><li>Everything in Free</li><li><b>Live trading</b> with real orders</li><li>15-minute and 1-hour window bots</li><li>Up to <b>$20</b> per trade</li><li>Up to <b>30 trades</b> per day</li><li>Priority updates and new features</li><li>Cancel anytime</li></ul>
+<button class="btn p full buy" data-plan="pro" type="button">Get Pro</button></div>
+
+<div class="plan pro"><span class="tag">MOST POPULAR</span><div class="bill"><span class="bl on" data-m="m">Monthly</span><label class="sw"><input type="checkbox" class="billsw" aria-label="Bill yearly"><i></i></label><span class="bl" data-m="y">Yearly</span><span class="save">Save 20%</span></div><h3 style="color:#b9c9ff">Unlimited</h3>
+<div class="price"><span class="g" data-m="9.99" data-y="7.99">$9.99</span><small> /month</small></div><div class="note" data-m="" data-y="Billed $95.90 per year"></div>
+<ul><li>Everything in Pro</li><li><b>Unlimited</b> trade amount</li><li><b>Unlimited</b> trades per day</li><li>Live trading on 15-minute and 1-hour windows</li><li>Priority updates and new features</li><li>Cancel anytime</li></ul>
+<button class="btn p full buy" data-plan="unlimited" type="button">Get Unlimited</button></div></div>
+<p style="text-align:center;color:#6f6c99;font-size:13px;margin-top:30px">Payments are handled securely by Stripe. Wela never sees or stores your card number.</p></div><footer><div class="wrap"><b class="logo" style="font-size:20px">Wela</b>
+<p><a href="terms.html" style="text-decoration:underline">Terms</a> &middot; <a href="privacy.html" style="text-decoration:underline">Privacy</a> &middot; <a href="refund.html" style="text-decoration:underline">Refund Policy</a> &middot; <a href="mailto:welastaffteam@outlook.com" style="text-decoration:underline">welastaffteam@outlook.com</a></p>
+<p>&copy; 2026 Wela. Trading prediction markets involves risk and you can lose money. Past or simulated results do not guarantee future results. Wela is software, not financial advice, and is not affiliated with Polymarket.</p></div></footer><script>
+document.addEventListener("DOMContentLoaded",()=>{
+let yearly=false;const sws=[...document.querySelectorAll(".billsw")];
+function set(y){yearly=y;sws.forEach(x=>x.checked=y);
+document.querySelectorAll(".bl").forEach(e=>e.classList.toggle("on",(e.dataset.m==="y")===y));
+document.querySelectorAll(".price .g").forEach(e=>{e.textContent="$"+(y?e.dataset.y:e.dataset.m)});
+document.querySelectorAll(".note[data-y]").forEach(e=>{e.textContent=y?e.dataset.y:""});}
+sws.forEach(x=>x.onchange=()=>set(x.checked));
+document.querySelectorAll(".bl").forEach(e=>e.onclick=()=>set(e.dataset.m==="y"));
+set(false);
+
+// ---- checkout ----
+const PRICES={pro:{m:"price_1UdGJvDVR1kFasJwPMWT5SPZ",y:"price_1UdGLGDVR1kFasJwc3bfSpyV"},
+unlimited:{m:"price_1UdGMbDVR1kFasJwXTSaRlKs",y:"price_1UdGMNDVR1kFasJwaCMSLbwL"}};
+const $=id=>document.getElementById(id);
+const buyBtns=[...document.querySelectorAll(".buy")];
+function show(type,t){const el=$("buyMsg");el.className="msg "+type;el.textContent=t}
+let user=null;
+(async()=>{if(!sb)return;
+const{data}=await sb.auth.getSession();user=data.session&&data.session.user;if(!user)return;
+const{data:p}=await sb.from("profiles").select("plan").eq("id",user.id).single();
+if(p&&p.plan&&p.plan!=="free")buyBtns.forEach(b=>{b.textContent="Manage subscription";b.dataset.mode="portal"})})();
+buyBtns.forEach(b=>b.onclick=async()=>{
+if(!sb){show("err","Site setup not finished yet.");return}
+if(!user){location.href="account.html#signup";return}
+const portal=b.dataset.mode==="portal";
+if(!portal&&!$("agree").checked){show("err","Please tick the box to agree to the Terms and Refund Policy first.");return}
+buyBtns.forEach(x=>x.disabled=true);$("buyMsg").className="msg";
+try{
+const{data,error}=portal?await sb.functions.invoke("create-portal"):await sb.functions.invoke("create-checkout",{body:{price_id:PRICES[b.dataset.plan][yearly?"y":"m"]}});
+if(error){let msg="Something went wrong. Please try again.";
+try{const j=await error.context.json();if(j&&j.error)msg=j.error}catch(_){}
+show("err",msg);return}
+if(data&&data.url){location.href=data.url}else{show("err","Something went wrong. Please try again.")}
+}finally{buyBtns.forEach(x=>x.disabled=false)}});
+});
+</script></body></html>
