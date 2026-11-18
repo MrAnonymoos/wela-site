@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Wela - Reset password</title><meta name="robots" content="noindex">
+<meta name="theme-color" content="#000000"><link rel="stylesheet" href="style.css?v=3">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="app.js" defer></script></head><body>
+<div class="wrap"><nav><a class="logo" href="index.html">Wela</a>
+<div class="links"><a class="l" href="index.html">Home</a><a class="l" href="subscribe.html">Subscribe</a><a class="l" href="download.html">Download</a>
+<div style="display:flex;gap:10px"><a class="btn o sm" href="account.html">Log in</a></div></div></nav></div>
+
+<div class="wrap"><div class="auth">
+<div id="checking"><p style="color:var(--muted);text-align:center">Checking your reset link...</p></div>
+<div id="bad" style="display:none"><h2 style="text-align:left;font-size:26px">Link not valid</h2>
+<p style="color:var(--muted);margin-top:10px">This reset link is invalid or has expired. Go back and request a new one.</p>
+<a class="btn p full" style="margin-top:24px" href="account.html">Back to log in</a></div>
+<div id="good" style="display:none"><h2 style="text-align:left;font-size:26px">Set a new password</h2>
+<form id="rform"><label>New password</label><input id="rpw" type="password" required minlength="8" autocomplete="new-password" placeholder="At least 8 characters">
+<label>Confirm new password</label><input id="rpw2" type="password" required minlength="8" autocomplete="new-password">
+<button class="btn p full" style="margin-top:22px" id="rgo" type="submit">Update password</button></form>
+<div class="msg" id="msg"></div></div>
+</div></div>
+
+<script>
+document.addEventListener("DOMContentLoaded",()=>{
+const $=id=>document.getElementById(id);
+function show(el,type,t){el.className="msg "+type;el.textContent=t}
+let shown=false;
+function showForm(){if(shown)return;shown=true;$("checking").style.display="none";$("bad").style.display="none";$("good").style.display="block"}
+function showBad(){if(shown)return;$("checking").style.display="none";$("bad").style.display="block"}
+if(!sb){showBad();return}
+// Only show the form when Supabase confirms this is a password-recovery visit.
+sb.auth.onAuthStateChange(ev=>{if(ev==="PASSWORD_RECOVERY")showForm()});
+if(recoveryLink)setTimeout(showForm,800);
+setTimeout(showBad,3000);
+$("rform").onsubmit=async e=>{e.preventDefault();const m=$("msg");
+if($("rpw").value!==$("rpw2").value){show(m,"err","Passwords do not match.");return}
+$("rgo").disabled=true;
+const{error}=await sb.auth.updateUser({password:$("rpw").value});
+if(error){$("rgo").disabled=false;show(m,"err",error.message);return}
+show(m,"ok","Password updated. Please log in with your new password...");
+try{await sb.auth.signOut()}catch(_){}
+setTimeout(()=>{location.href="account.html"},1800)};
+});
+</script>
+<footer><div class="wrap"><b class="logo" style="font-size:20px">Wela</b>
+<p>&copy; 2026 Wela. Trading prediction markets involves risk and you can lose money. Past or simulated results do not guarantee future results. Wela is software, not financial advice, and is not affiliated with Polymarket.</p></div></footer></body></html>
