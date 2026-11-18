@@ -1,10 +1,10 @@
-// ====== 1. PASTE YOUR SUPABASE DETAILS HERE (see the setup guide) ======
-const SUPABASE_URL = "PASTE_YOUR_PROJECT_URL";
-const SUPABASE_ANON_KEY = "PASTE_YOUR_ANON_PUBLIC_KEY";
+
+const SUPABASE_URL = "https://nednklpoyendpwneolwn.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_1q9ILYq1e0t5QxNrQ-y76w_nTDh_nRC";
 // ========================================================================
-// Cloudflare Turnstile SITE key (public, safe here). The SECRET key lives only in Supabase.
+
 const TURNSTILE_SITE_KEY = "0x4AAAAAAGGMAJ1fwVRo_eJD";
-// True if the page was opened from a password-reset email link (checked before Supabase clears the URL).
+
 const recoveryLink = /type=recovery/.test(location.hash) || /type=recovery/.test(location.search);
 const configured = !SUPABASE_URL.startsWith("PASTE");
 const sb = configured ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
